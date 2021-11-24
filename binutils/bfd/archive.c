@@ -1370,11 +1370,11 @@ bfd_ar_hdr_from_filesystem (abfd, filename)
   strncpy (hdr->ar_fmag, ARFMAG, 2);
 
   /* Goddamned sprintf doesn't permit MAXIMUM field lengths */
-  sprintf ((hdr->ar_date), "%-12ld", (long) status.st_mtime);
+  sprintf ((hdr->ar_date), "%-11ld", (long) status.st_mtime);
   sprintf ((hdr->ar_uid), "%ld", (long) status.st_uid);
   sprintf ((hdr->ar_gid), "%ld", (long) status.st_gid);
-  sprintf ((hdr->ar_mode), "%-8o", (unsigned int) status.st_mode);
-  sprintf ((hdr->ar_size), "%-10ld", (long) status.st_size);
+  sprintf ((hdr->ar_mode), "%-7o", (unsigned int) status.st_mode);
+  sprintf ((hdr->ar_size), "%-9ld", (long) status.st_size);
   /* Correct for a lossage in sprintf whereby it null-terminates.  I cannot
      understand how these C losers could design such a ramshackle bunch of
      IO operations */
@@ -1634,7 +1634,7 @@ _bfd_write_archive_contents (arch)
       memset ((char *) (&hdr), 0, sizeof (struct ar_hdr));
       strcpy (hdr.ar_name, ename);
       /* Round size up to even number in archive header.  */
-      sprintf (&(hdr.ar_size[0]), "%-10d",
+      sprintf (&(hdr.ar_size[0]), "%-9d",
 	       (int) ((elength + 1) & ~1));
       strncpy (hdr.ar_fmag, ARFMAG, 2);
       for (i = 0; i < sizeof (struct ar_hdr); i++)
@@ -1894,7 +1894,7 @@ bsd_write_armap (arch, elength, map, orl_count, stridx)
   sprintf (hdr.ar_uid, "%ld", (long) 666);
   sprintf (hdr.ar_gid, "%ld", (long) 42);
 #endif
-  sprintf (hdr.ar_size, "%-10d", (int) mapsize);
+  sprintf (hdr.ar_size, "%-9d", (int) mapsize);
   strncpy (hdr.ar_fmag, ARFMAG, 2);
   for (i = 0; i < sizeof (struct ar_hdr); i++)
     if (((char *) (&hdr))[i] == '\0')
@@ -2046,7 +2046,7 @@ coff_write_armap (arch, elength, map, symbol_count, stridx)
 
   memset ((char *) (&hdr), 0, sizeof (struct ar_hdr));
   hdr.ar_name[0] = '/';
-  sprintf (hdr.ar_size, "%-10d", (int) mapsize);
+  sprintf (hdr.ar_size, "%-9d", (int) mapsize);
   sprintf (hdr.ar_date, "%ld", (long) time (NULL));
   /* This, at least, is what Intel coff sets the values to.: */
   sprintf ((hdr.ar_uid), "%d", 0);
