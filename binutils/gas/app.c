@@ -600,7 +600,7 @@ do_scrub_chars (get, tostart, tolen)
 
     recycle:
 
-#ifdef TC_M68K
+#if defined(TC_M68K) || defined(TC_HC1X)
       /* We want to have pseudo-ops which control whether we are in
          MRI mode or not.  Unfortunately, since m68k MRI mode affects
          the scrubber, that means that we need a special purpose

@@ -27,8 +27,8 @@ SECTIONS
     ${RELOCATING+ edata  =  . ; _edata = .};
     ${RELOCATING+ . = ALIGN(${SEGMENT_SIZE});}
   }
-  ${CONSTRUCTING+${RELOCATING-.ctor : { *(.ctor) }}}
-  ${CONSTRUCTING+${RELOCATING-.dtor : { *(.dtor) }}}
+  ${CONSTRUCTING+${RELOCATING-.ctor : "{ *(.ctor) }"}}
+  ${CONSTRUCTING+${RELOCATING-.dtor : "{ *(.dtor) }"}}
   .bss ${RELOCATING+ SIZEOF(.data) + ADDR(.data)} :
   { 					
     *(.bss)

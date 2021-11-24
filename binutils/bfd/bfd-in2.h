@@ -1266,6 +1266,10 @@ enum bfd_architecture
 #define bfd_mach_m32r          0  /* backwards compatibility */
   bfd_arch_mn10200,    /* Matsushita MN10200 */
   bfd_arch_mn10300,    /* Matsushita MN10300 */
+  bfd_arch_hc1x,       /* Motorola 68HC11, 68HC12, 68HC16 */
+#define bfd_mach_hc11		1
+#define bfd_mach_hc12		2
+#define bfd_mach_hc16		3
   bfd_arch_last
   };
 
@@ -1549,6 +1553,7 @@ The 24-bit relocation is used in some Intel 960 configurations. */
   BFD_RELOC_24_PCREL,
   BFD_RELOC_16_PCREL,
   BFD_RELOC_12_PCREL,
+  BFD_RELOC_9_PCREL,
   BFD_RELOC_8_PCREL,
 
 /* For ELF. */
@@ -1588,6 +1593,12 @@ The 24-bit relocation is used in some Intel 960 configurations. */
 
 /* Absolute 8-bit relocation, but used to form an address like 0xFFnn. */
   BFD_RELOC_8_FFnn,
+
+/* For hc12 call instruction -- swaps page and address */
+  BFD_RELOC_HC12,
+
+/* For hc16 jmp and jsr -- 20 bit address */
+  BFD_RELOC_20,
 
 /* These PC-relative relocations are stored as word displacements --
 i.e., byte displacements shifted right two bits.  The 30-bit word

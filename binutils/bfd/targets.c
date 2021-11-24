@@ -518,6 +518,7 @@ extern const bfd_target ecoffalpha_little_vec;
 extern const bfd_target evax_alpha_vec;
 extern const bfd_target h8300coff_vec;
 extern const bfd_target h8500coff_vec;
+extern const bfd_target hc1xcoff_vec;
 extern const bfd_target host_aout_vec;
 extern const bfd_target hp300bsd_vec;
 extern const bfd_target hp300hpux_vec;
@@ -691,6 +692,7 @@ const bfd_target * const bfd_target_vector[] = {
 #endif
 	&h8300coff_vec,
 	&h8500coff_vec,
+	&hc1xcoff_vec,
 #if 0
 	/* Since a.out files lack decent magic numbers, no way to recognize
 	   which kind of a.out file it is.  */

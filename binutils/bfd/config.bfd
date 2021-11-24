@@ -33,6 +33,7 @@ arm*)	targ_archs=bfd_arm_arch ;;
 c30*)	targ_archs=bfd_tic30_arch ;;
 thumb*)	targ_archs=bfd_arm_arch ;;
 hppa*)	targ_archs=bfd_hppa_arch ;;
+hc1x*)	targ_archs=bfd_hc1x_arch ;;
 i[3456]86) targ_archs=bfd_i386_arch ;;
 m68*)	targ_archs=bfd_m68k_arch ;;
 m88*)	targ_archs=bfd_m88k_arch ;;
@@ -146,6 +147,18 @@ case "${targ}" in
   h8500-*-*)
     targ_defvec=h8500coff_vec
     targ_underscore=yes
+    ;;
+
+  hc11*-*-*)
+    targ_defvec=hc1xcoff_vec
+    ;;
+
+  hc12*-*-*)
+    targ_defvec=hc1xcoff_vec
+    ;;
+
+  hc16*-*-*)
+    targ_defvec=hc1xcoff_vec
     ;;
 
   hppa*-*-*elf* | hppa*-*-lites* | hppa*-*-sysv4* | hppa*-*-rtems*)

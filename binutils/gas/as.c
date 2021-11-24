@@ -575,7 +575,7 @@ the GNU General Public License.  This program has absolutely no warranty.\n");
 
 	case 'M':
 	  flag_mri = 1;
-#ifdef TC_M68K
+#if defined(TC_M68K) || defined(TC_HC1X)
 	  flag_m68k_mri = 1;
 #endif
 	  break;
@@ -742,6 +742,14 @@ main (argc, argv)
      specification.  */
   macro_alternate = 1;
   macro_strip_at = 1;
+#endif
+
+#ifdef MACRO_ALTERNATE
+  macro_alternate = MACRO_ALTERNATE;
+#endif
+
+#ifdef MACRO_STRIP_AT
+  macro_strip_at = MACRO_STRIP_AT;
 #endif
 
   macro_init (macro_alternate, flag_mri, macro_strip_at, macro_expr);

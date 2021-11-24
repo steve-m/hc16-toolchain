@@ -598,6 +598,8 @@ struct internal_reloc
 #define R_LVRT16 132
 #define R_VRT32  133
 #define R_RELLONG	(0x11)	/* Direct 32-bit relocation */
+#define R_RELBYTE_HC12	(0x15)	/* for hc12 call instruction */
+#define R_REL20		(0x16)	/* for hc16 jmp and jsr insns */
 #define R_IPRSHORT	(0x18)
 #define R_IPRLONG	(0x1a)
 #define R_GETSEG	(0x1d)

@@ -1472,6 +1472,10 @@ EOF
 
       h8300-*-coff)         fmt=coff ;;
 
+      hc11-*-coff)          fmt=coff ;;
+      hc12-*-coff)          fmt=coff ;;
+      hc16-*-coff)          fmt=coff ;;
+
       i386-ibm-aix*)        fmt=coff em=i386aix ;;
       i386-sequent-bsd*)    fmt=aout em=dynix bfd_gas=yes ;;
       i386-*-bsd*)          fmt=aout em=386bsd ;;
@@ -1831,8 +1835,30 @@ EOF
 #define M88KCOFF 1
 EOF
  ;;
+      hc11) cat >> confdefs.h <<\EOF
+#define BFD_ASSEMBLER 1
+EOF
+ ;;
+      hc12) cat >> confdefs.h <<\EOF
+#define BFD_ASSEMBLER 1
+EOF
+ ;;
+      hc16) cat >> confdefs.h <<\EOF
+#define BFD_ASSEMBLER 1
+EOF
+ ;;
     esac
     ;;
+esac
+
+# For the HC1x series, we use MRI syntax, but would like to avoid the 
+# dangerous practice of terminating a macro call input line on the first 
+# whitespace, so we kill a couple of lines in macro.c with:
+case ${target_cpu_type} in
+      hc11 | hc12 | hc16) cat >> confdefs.h <<\EOF
+#define ALLOW_WHITESPACE_IN_MRI_MACRO_CALLS 1
+EOF
+ ;;
 esac
 
 # Getting this done right is going to be a bitch.  Each configuration specified

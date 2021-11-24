@@ -77,3 +77,9 @@
 
 /* Needed only for SCO 5.  */
 #undef SCO_ELF
+
+/* For the HC1x series, we use MRI syntax, but would like to avoid the
+   dangerous practice of terminating a macro call input line on the first
+   whitespace, so we kill a couple of lines in macro.c with:    */
+#undef ALLOW_WHITESPACE_IN_MRI_MACRO_CALLS
+

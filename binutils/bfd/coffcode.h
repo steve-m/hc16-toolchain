@@ -1619,6 +1619,22 @@ coff_set_arch_mach_hook (abfd, filehdr)
       break;
 #endif
 
+#ifdef HC11MAGIC
+    case HC11MAGIC:
+      arch = bfd_arch_hc1x;
+      machine = bfd_mach_hc11;
+      break;
+
+    case HC12MAGIC:
+      arch = bfd_arch_hc1x;
+      machine = bfd_mach_hc12;
+      break;
+
+    case HC16MAGIC:
+      arch = bfd_arch_hc1x;
+      machine = bfd_mach_hc16;
+      break;
+#endif
 
     default:			/* Unreadable input file type */
       arch = bfd_arch_obscure;
@@ -2139,6 +2155,26 @@ coff_set_flags (abfd, magicp, flagsp)
     case bfd_arch_powerpc:
 #endif
       *magicp = U802TOCMAGIC;
+      return true;
+      break;
+#endif
+
+#ifdef HC11MAGIC
+    case bfd_arch_hc1x:
+      switch (bfd_get_mach (abfd))
+      {
+      case bfd_mach_hc11:
+        *magicp = HC11MAGIC;
+        break;
+      case bfd_mach_hc12:
+        *magicp = HC12MAGIC;
+        break;
+      case bfd_mach_hc16:
+        *magicp = HC16MAGIC;
+        break;
+      default:
+        return false;
+      }
       return true;
       break;
 #endif

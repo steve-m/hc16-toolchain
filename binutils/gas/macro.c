@@ -1032,6 +1032,9 @@ macro_expand (idx, in, m, out, comment_char)
 	  while (f != NULL && f->index < 0);
 	}
 
+#ifdef ALLOW_WHITESPACE_IN_MRI_MACRO_CALLS
+      idx = sb_skip_comma (idx, in);
+#else
       if (! macro_mri)
 	idx = sb_skip_comma (idx, in);
       else
@@ -1041,6 +1044,7 @@ macro_expand (idx, in, m, out, comment_char)
 	  if (ISWHITE (in->ptr[idx]))
 	    break;
 	}
+#endif
     }
 
   if (macro_mri)

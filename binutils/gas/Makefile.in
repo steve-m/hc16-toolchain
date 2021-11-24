@@ -119,6 +119,9 @@ CPU_TYPES = \
 	d10v \
 	h8300 \
 	h8500 \
+	hc11 \
+	hc12 \
+	hc16 \
 	hppa \
 	i386 \
 	i860 \
@@ -267,6 +270,9 @@ TARGET_CPU_CFILES = \
 	config/tc-d10v.c \
 	config/tc-h8300.c \
 	config/tc-h8500.c \
+	config/tc-hc11.c \
+	config/tc-hc12.c \
+	config/tc-hc16.c \
 	config/tc-hppa.c \
 	config/tc-i386.c \
 	config/tc-i860.c \
@@ -296,6 +302,9 @@ TARGET_CPU_HFILES = \
 	config/tc-d10v.h \
 	config/tc-h8300.h \
 	config/tc-h8500.h \
+	config/tc-hc11.h \
+	config/tc-hc12.h \
+	config/tc-hc16.h \
 	config/tc-hppa.h \
 	config/tc-i386.h \
 	config/tc-i860.h \
@@ -565,6 +574,15 @@ TCDEP_h8500_elf = $(srcdir)/config/obj-elf.h $(BFDDIR)/elf-bfd.h \
   $(INCDIR)/elf/common.h $(INCDIR)/elf/internal.h $(INCDIR)/elf/external.h \
   $(INCDIR)/bfdlink.h $(srcdir)/config/tc-h8500.h subsegs.h \
   $(INCDIR)/obstack.h $(srcdir)/../opcodes/h8500-opc.h
+TCDEP_hc11_coff = $(srcdir)/config/obj-coff.h $(srcdir)/config/tc-hc11.h \
+  $(INCDIR)/coff/internal.h $(INCDIR)/coff/hc1x.h $(BFDDIR)/libcoff.h \
+  $(INCDIR)/bfdlink.h subsegs.h $(INCDIR)/obstack.h $(INCDIR)/opcode/hc11.h
+TCDEP_hc12_coff = $(srcdir)/config/obj-coff.h $(srcdir)/config/tc-hc12.h \
+  $(INCDIR)/coff/internal.h $(INCDIR)/coff/hc1x.h $(BFDDIR)/libcoff.h \
+  $(INCDIR)/bfdlink.h subsegs.h $(INCDIR)/obstack.h $(INCDIR)/opcode/hc12.h
+TCDEP_hc16_coff = $(srcdir)/config/obj-coff.h $(srcdir)/config/tc-hc16.h \
+  $(INCDIR)/coff/internal.h $(INCDIR)/coff/hc1x.h $(BFDDIR)/libcoff.h \
+  $(INCDIR)/bfdlink.h subsegs.h $(INCDIR)/obstack.h $(INCDIR)/opcode/hc16.h
 TCDEP_hppa_coff = $(srcdir)/config/obj-coff.h $(srcdir)/config/tc-hppa.h \
   $(INCDIR)/coff/internal.h $(BFDDIR)/libcoff.h $(INCDIR)/bfdlink.h \
   subsegs.h $(INCDIR)/obstack.h $(BFDDIR)/libhppa.h $(BFDDIR)/libbfd.h \
@@ -815,6 +833,15 @@ OBJDEP_h8500_elf = $(srcdir)/config/obj-elf.h $(BFDDIR)/elf-bfd.h \
   $(INCDIR)/elf/common.h $(INCDIR)/elf/internal.h $(INCDIR)/elf/external.h \
   $(INCDIR)/bfdlink.h $(srcdir)/config/tc-h8500.h subsegs.h \
   $(INCDIR)/obstack.h $(INCDIR)/aout/aout64.h
+OBJDEP_hc11_coff = $(srcdir)/config/obj-coff.h $(srcdir)/config/tc-hc11.h \
+  $(INCDIR)/coff/internal.h $(INCDIR)/coff/hc1x.h $(BFDDIR)/libcoff.h \
+  $(INCDIR)/bfdlink.h $(INCDIR)/obstack.h subsegs.h
+OBJDEP_hc12_coff = $(srcdir)/config/obj-coff.h $(srcdir)/config/tc-hc12.h \
+  $(INCDIR)/coff/internal.h $(INCDIR)/coff/hc1x.h $(BFDDIR)/libcoff.h \
+  $(INCDIR)/bfdlink.h $(INCDIR)/obstack.h subsegs.h
+OBJDEP_hc16_coff = $(srcdir)/config/obj-coff.h $(srcdir)/config/tc-hc16.h \
+  $(INCDIR)/coff/internal.h $(INCDIR)/coff/hc1x.h $(BFDDIR)/libcoff.h \
+  $(INCDIR)/bfdlink.h $(INCDIR)/obstack.h subsegs.h
 OBJDEP_hppa_coff = $(srcdir)/config/obj-coff.h $(srcdir)/config/tc-hppa.h \
   $(INCDIR)/coff/internal.h $(BFDDIR)/libcoff.h $(INCDIR)/bfdlink.h \
   $(INCDIR)/obstack.h subsegs.h
@@ -1049,6 +1076,15 @@ DEP_h8500_coff = $(srcdir)/config/obj-coff.h $(srcdir)/config/tc-h8500.h \
 DEP_h8500_elf = $(srcdir)/config/obj-elf.h $(BFDDIR)/elf-bfd.h \
   $(INCDIR)/elf/common.h $(INCDIR)/elf/internal.h $(INCDIR)/elf/external.h \
   $(INCDIR)/bfdlink.h $(srcdir)/config/tc-h8500.h
+DEP_hc11_coff = $(srcdir)/config/obj-coff.h $(srcdir)/config/tc-hc11.h \
+  $(INCDIR)/coff/internal.h $(INCDIR)/coff/hc1x.h $(BFDDIR)/libcoff.h \
+  $(INCDIR)/bfdlink.h
+DEP_hc12_coff = $(srcdir)/config/obj-coff.h $(srcdir)/config/tc-hc12.h \
+  $(INCDIR)/coff/internal.h $(INCDIR)/coff/hc1x.h $(BFDDIR)/libcoff.h \
+  $(INCDIR)/bfdlink.h
+DEP_hc16_coff = $(srcdir)/config/obj-coff.h $(srcdir)/config/tc-hc16.h \
+  $(INCDIR)/coff/internal.h $(INCDIR)/coff/hc1x.h $(BFDDIR)/libcoff.h \
+  $(INCDIR)/bfdlink.h
 DEP_hppa_coff = $(srcdir)/config/obj-coff.h $(srcdir)/config/tc-hppa.h \
   $(INCDIR)/coff/internal.h $(BFDDIR)/libcoff.h $(INCDIR)/bfdlink.h
 DEP_hppa_elf = $(srcdir)/config/obj-elf.h $(BFDDIR)/elf-bfd.h \

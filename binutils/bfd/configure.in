@@ -446,6 +446,7 @@ do
  				target64=true ;;
     h8300coff_vec)		tb="$tb coff-h8300.lo reloc16.lo" ;;
     h8500coff_vec)		tb="$tb coff-h8500.lo reloc16.lo" ;;
+    hc1xcoff_vec)		tb="$tb coff-hc1x.lo" ;;
     host_aout_vec)		tb="$tb host-aout.lo aout32.lo" ;;
     hp300bsd_vec)		tb="$tb hp300bsd.lo aout32.lo" ;;
     hp300hpux_vec)		tb="$tb hp300hpux.lo aout32.lo" ;;

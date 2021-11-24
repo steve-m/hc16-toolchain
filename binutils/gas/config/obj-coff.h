@@ -117,6 +117,11 @@
    : (sh_small ? "coff-sh-small" : "coff-sh"))
 #endif
 
+#ifdef TC_HC1X
+#include "coff/hc1x.h"
+#define TARGET_FORMAT "coff-hc1x"
+#endif
+
 #ifdef TC_M88K
 #include "coff/m88k.h"
 #define TARGET_FORMAT "coff-m88kbcs"

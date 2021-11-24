@@ -736,6 +736,21 @@ case "${target}" in
     # Macs want a resource compiler.
     configdirs="$configdirs grez"
     ;;    
+  hc11-*-*)
+    cross_only=""
+    target_libs=""
+    noconfigdirs="$noconfigdirs target-libg++ target-libstdc++ target-librx target-libiberty target-newlib target-libgloss target-libgcc"
+    ;;
+  hc12-*-*)
+    cross_only=""
+    target_libs=""
+    noconfigdirs="$noconfigdirs target-libg++ target-libstdc++ target-librx target-libiberty target-newlib target-libgloss target-libgcc"
+    ;;
+  hc16-*-*)
+    cross_only=""
+    target_libs=""
+    noconfigdirs="$noconfigdirs target-libg++ target-libstdc++ target-librx target-libiberty target-newlib target-libgloss target-libgcc"
+    ;;
 esac
 
 # If we aren't building newlib, then don't build libgloss, since libgloss

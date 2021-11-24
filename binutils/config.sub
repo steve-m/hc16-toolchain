@@ -215,6 +215,11 @@ case $basic_machine in
 	i[3456]86)
 	  basic_machine=$basic_machine-pc
 	  ;;
+# Real-Time Systems local
+		hc11 | hc12 | hc16 )
+		basic_machine=$basic_machine-unknown
+		;;
+# end Real-Time Systems local
 	# Object if more than one company name word.
 	*-*-*)
 		echo Invalid configuration \`$1\': machine \`$basic_machine\' not recognized 1>&2
@@ -251,6 +256,8 @@ case $basic_machine in
 		;;
 	c30-*) # CYGNUS LOCAL ian/tic30
 		basic_machine=tic30-unknown
+		;;
+	hc11-* | hc12-* | hc16-*) # Real-Time Systems local
 		;;
 	# Recognize the various machine names and aliases which stand
 	# for a CPU type and a company and sometimes even an OS.
@@ -879,6 +886,18 @@ case $basic_machine in
 		;;
 	pmac | pmac-mpw)				# CYGNUS LOCAL
 		basic_machine=powerpc-apple
+		;;
+	hc11)						# Real-Time Systems local
+		basic_machine=hc11-unknown
+		os=-none
+		;;
+	hc12)						# Real-Time Systems local
+		basic_machine=hc12-unknown
+		os=-none
+		;;
+	hc16)						# Real-Time Systems local
+		basic_machine=hc16-unknown
+		os=-none
 		;;
 	*)
 		echo Invalid configuration \`$1\': machine \`$basic_machine\' not recognized 1>&2

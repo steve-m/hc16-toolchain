@@ -191,11 +191,13 @@ symbolS *line_label;
    non-NULL when we are in an MRI common section.  */
 symbolS *mri_common_symbol;
 
+#ifndef DONT_ALIGN_AFTER_MRI_DCB
 /* In MRI mode, after a dc.b pseudo-op with an odd number of bytes, we
    need to align to an even byte boundary unless the next pseudo-op is
    dc.b, ds.b, or dcb.b.  This variable is set to 1 if an alignment
    may be needed.  */
 static int mri_pending_align;
+#endif
 
 #ifndef NO_LISTING
 #ifdef OBJ_ELF
@@ -746,6 +748,7 @@ read_a_source_file (name)
 		      if (pop == NULL)
 			pop = (pseudo_typeS *) hash_find (po_hash, s + 1);
 
+#ifndef DONT_ALIGN_AFTER_MRI_DCB
 		      /* In MRI mode, we may need to insert an
                          automatic alignment directive.  What a hack
                          this is.  */
@@ -775,6 +778,7 @@ read_a_source_file (name)
 			      S_SET_VALUE (line_label, frag_now_fix ());
 			    }
 			}
+#endif
 
 		      /* Print the error msg now, while we still can */
 		      if (pop == NULL)
@@ -869,6 +873,7 @@ read_a_source_file (name)
 			    }
 			}
 
+#ifndef DONT_ALIGN_AFTER_MRI_DCB
 		      if (mri_pending_align)
 			{
 			  do_align (1, (char *) NULL, 0, 0);
@@ -879,6 +884,7 @@ read_a_source_file (name)
 			      S_SET_VALUE (line_label, frag_now_fix ());
 			    }
 			}
+#endif
 
 		      md_assemble (s);	/* Assemble 1 instruction. */
 
@@ -2310,7 +2316,7 @@ s_mri (ignore)
   if (on != 0)
     {
       flag_mri = 1;
-#ifdef TC_M68K
+#if defined(TC_M68K) || defined(TC_HC1X)
       flag_m68k_mri = 1;
 #endif
     }
@@ -2417,7 +2423,7 @@ void
 s_mri_sect (type)
      char *type;
 {
-#ifdef TC_M68K
+#if defined(TC_M68K) || defined(TC_HC1X)
 
   char *name;
   char c;
@@ -2891,11 +2897,13 @@ s_space (mult)
 
  getout:
 
+#ifndef DONT_ALIGN_AFTER_MRI_DCB
   /* In MRI mode, after an odd number of bytes, we must align to an
      even word boundary, unless the next instruction is a dc.b, ds.b
      or dcb.b.  */
   if (flag_mri && (bytes & 1) != 0)
     mri_pending_align = 1;
+#endif
 
   if (flag_mri)
     mri_comment_end (stop, stopc);
@@ -3253,11 +3261,13 @@ cons_worker (nbytes, rva)
     }
   while (*input_line_pointer++ == ',');
 
+#ifndef DONT_ALIGN_AFTER_MRI_DCB
   /* In MRI mode, after an odd number of bytes, we must align to an
      even word boundary, unless the next instruction is a dc.b, ds.b
      or dcb.b.  */
   if (flag_mri && nbytes == 1 && (c & 1) != 0)
     mri_pending_align = 1;
+#endif
 
   input_line_pointer--;		/* Put terminator back into stream. */
 

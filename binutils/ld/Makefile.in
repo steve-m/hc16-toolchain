@@ -200,6 +200,9 @@ ALL_EMULATIONS = \
 	eh8500c.o \
 	eh8500m.o \
 	eh8500s.o \
+	ehc11.o \
+	ehc12.o \
+	ehc16.o \
 	ehp300bsd.o \
 	ehp3hpux.o \
 	ehppaelf.o \
@@ -856,6 +859,15 @@ eh8500m.c: $(srcdir)/emulparams/h8500m.sh \
 eh8500s.c: $(srcdir)/emulparams/h8500s.sh \
   $(srcdir)/emultempl/generic.em $(srcdir)/scripttempl/h8500s.sc ${GEN_DEPENDS}
 	${GENSCRIPTS} h8500s "$(tdir_h8500s)"
+ehc11.c: $(srcdir)/emulparams/hc11.sh \
+  $(srcdir)/emultempl/generic.em $(srcdir)/scripttempl/hc11.sc ${GEN_DEPENDS}
+	${GENSCRIPTS} hc11 "$(tdir_hc11)"
+ehc12.c: $(srcdir)/emulparams/hc12.sh \
+  $(srcdir)/emultempl/generic.em $(srcdir)/scripttempl/hc12.sc ${GEN_DEPENDS}
+	${GENSCRIPTS} hc12 "$(tdir_hc12)"
+ehc16.c: $(srcdir)/emulparams/hc16.sh \
+  $(srcdir)/emultempl/generic.em $(srcdir)/scripttempl/hc16.sc ${GEN_DEPENDS}
+	${GENSCRIPTS} hc16 "$(tdir_hc16)"
 ehp300bsd.c: $(srcdir)/emulparams/hp300bsd.sh \
   $(srcdir)/emultempl/generic.em $(srcdir)/scripttempl/aout.sc ${GEN_DEPENDS}
 	${GENSCRIPTS} hp300bsd "$(tdir_hp300bsd)"

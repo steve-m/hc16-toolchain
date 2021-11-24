@@ -171,6 +171,10 @@ DESCRIPTION
 .#define bfd_mach_m32r		0 {* backwards compatibility *}
 .  bfd_arch_mn10200,   {* Matsushita MN10200 *}
 .  bfd_arch_mn10300,   {* Matsushita MN10300 *}
+.  bfd_arch_hc1x,      {* Motorola 68HC11, 68HC12, 68HC16 *}
+.#define bfd_mach_hc11		1
+.#define bfd_mach_hc12		2
+.#define bfd_mach_hc16		3
 .  bfd_arch_last
 .  };
 
@@ -216,6 +220,9 @@ extern const bfd_arch_info_type bfd_arm_arch;
 extern const bfd_arch_info_type bfd_d10v_arch;
 extern const bfd_arch_info_type bfd_h8300_arch;
 extern const bfd_arch_info_type bfd_h8500_arch;
+extern const bfd_arch_info_type bfd_hc11_arch;
+extern const bfd_arch_info_type bfd_hc12_arch;
+extern const bfd_arch_info_type bfd_hc16_arch;
 extern const bfd_arch_info_type bfd_hppa_arch;
 extern const bfd_arch_info_type bfd_i386_arch;
 extern const bfd_arch_info_type bfd_i860_arch;
@@ -250,6 +257,9 @@ static const bfd_arch_info_type * const bfd_archures_list[] =
   &bfd_d10v_arch,
   &bfd_h8300_arch,
   &bfd_h8500_arch,
+  &bfd_hc11_arch,
+  &bfd_hc12_arch,
+  &bfd_hc16_arch,
   &bfd_hppa_arch,
   &bfd_i386_arch,
   &bfd_i860_arch,
@@ -771,6 +781,12 @@ bfd_default_scan (info, string)
       arch = bfd_arch_rs6000;
       break;
 
+    case 11:
+    case 12:
+    case 16:
+      arch = bfd_arch_hc1x;
+      break;
+      
     default:  
       return false;
     }
