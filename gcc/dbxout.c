@@ -358,9 +358,13 @@ dbxout_function_end ()
   /* By convention, GCC will mark the end of a function with an N_FUN
      symbol and an empty string.  */
   fprintf (asmfile, "%s \"\",%d,0,0,", ASM_STABS_OP, N_FUN);
+#ifdef ASM_OUTPUT_FUNCTION_SCOPE
+  ASM_OUTPUT_FUNCTION_SCOPE(asmfile, lscope_label_name, current_function_decl);
+#else
   assemble_name (asmfile, lscope_label_name);
   fputc ('-', asmfile);
   assemble_name (asmfile, XSTR (XEXP (DECL_RTL (current_function_decl), 0), 0));
+#endif
   fprintf (asmfile, "\n");
 }
 

@@ -57,19 +57,20 @@ Boston, MA 02111-1307, USA.  */
 #define _POSIX_SOURCE
 #endif
 
-#include <varargs.h>
-/* On some systems stdio.h includes stdarg.h;
-   we must bring in varargs.h first.  */
 #include <stdio.h>
 #include <ctype.h>
 #include <errno.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#if defined (__CYGWIN32__)
+#include <dirent.h>
+#else
 #if ! defined (_WIN32) || defined (__CYGWIN32__)
 #if defined(POSIX) || defined(CONCURRENT)
 #include <dirent.h>
 #else
 #include <sys/dir.h>
+#endif
 #endif
 #endif
 #include <setjmp.h>

@@ -1,0 +1,25 @@
+
+
+			XGCC for 68HC12
+			---------------
+
+
+xgcc12_0 -- 1997 July 29
+------------------------
+
+	Initial port from HC11 to HC12, using no new HC12 features except
+	stack frame manipulation.
+
+
+
+xgcc12_1 -- 1997 October 7
+--------------------------
+
+	Upgraded to take advantage of HC12 instruction set:  stack-based
+	addressing, new addressing modes, new arithmetic instructions.
+
+	Added omit-frame-pointer flag to support future use with a debugger.
+
+	Added medium memory model to support bank switching in HC12A4.
+
+

@@ -1,0 +1,59 @@
+; $Id: float.mac,v 1.1 2015/02/19 20:21:28 querbach Exp $
+
+; float.mac	              Copyright (C) 1992-1994, Real-Time Systems Inc.
+;------------------------------------------- All Rights Reserved ------------
+;
+;	Stack-Based Floating-Point Math Routines
+;
+;	This module implements a floating-point calculator.  All routines
+;	assume that x points to the top entry in a floating-point data
+;	stack.  Due to the use of a stack for operands an results, all
+;	routines in this module are re-entrant.  The size of each entry
+;	in the stack is fp_siz, defined in float.mac.
+;
+;	The first group of routines push items to or pop items from the
+;	stack.  The second group provide stack manipulation operations.
+;	The final group perform the basic arithmetic operations.
+;
+;	Several error conditions are trapped by the arithmetic routines.
+;	In all cases, the error conditions are converted into reasonable
+;	values on the stack, which allows calculations to continue.
+;
+;----------------------------------------------------------------------------
+
+; access routines
+	declare	fp_push_float	; push floating-point number on float stack
+	declare	fp_push_uint	; push 16-bit unsigned number on float stack
+	declare	fp_push_int	; push 16-bit signed number on float stack
+	declare	fp_push_long	; push 24-bit signed number on float stack
+
+	declare	fp_pop_float	; pop floating-point number from float stack
+	declare	fp_pop_q15	; pop Q15 fraction from float stack
+	declare	fp_pop_long	; pop 24-bit signed number from float stack
+	declare	fp_pop_uint	; pop 16-bit unsigned number from float stack
+	declare	fp_pop_int	; pop 16-bit signed number from float stack
+
+	declare	fp_int		; drop fractional part of top entry
+	declare	fp_frac		; drop integer part of top entry
+
+	declare	fp_swap		; exchange top two float-stack entries
+	declare	fp_dup		; duplicate and push top float-stack entry
+	declare	fp_over		; duplicate and push second float-stack entry
+	declare	fp_drop		; pop and discard top float-stack entry
+
+	declare	fp_tst		; compare top entry with zero
+	declare	fp_min		; return minimum of top two stack entries
+	declare	fp_max		; return maximum of top two stack entries
+	declare	fp_cmp		; compare second entry to top entry
+	declare	fp_neg		; negate top stack entry
+	declare	fp_abs		; take absolute value of top entry
+	declare	fp_add		; add second entry to top entry
+	declare	fp_sub		; subtract second entry from top entry
+	declare	fp_mul		; multiply second entry by top entry
+	declare	fp_div		; divide second entry by top entry
+	declare	fp_mod		; get remainder of division, top/second
+
+; floating-point stack entry
+fp_siz	equ	 6		; size of floating-point stack entry
+
+

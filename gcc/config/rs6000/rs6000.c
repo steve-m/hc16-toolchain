@@ -5001,8 +5001,7 @@ rs6000_select_section (decl, reloc)
     }
   else if (TREE_CODE (decl) == VAR_DECL)
     {
-      if ((flag_pic && reloc)
-	  || !TREE_READONLY (decl)
+      if (!TREE_READONLY (decl)
 	  || TREE_SIDE_EFFECTS (decl)
 	  || !DECL_INITIAL (decl)
 	  || (DECL_INITIAL (decl) != error_mark_node
@@ -5023,7 +5022,12 @@ rs6000_select_section (decl, reloc)
 		sdata_section ();	/* System V doesn't have .sdata2/.sbss2 */
 	    }
 	  else
-	    const_section ();
+            {
+              if (flag_pic && reloc)
+                reloc_section ();
+              else 	  
+                const_section ();
+            }
 	}
     }
   else

@@ -426,8 +426,7 @@ do {									\
 
 /* Put relocatable data in .data, not .rodata so initialized pointers can be updated */
 #undef	CONST_SECTION_ASM_OP
-#define CONST_SECTION_ASM_OP \
-  ((TARGET_RELOCATABLE || flag_pic) ? "\t.section\t\".data\"\t# .rodata" : "\t.section\t\".rodata\"")
+#define CONST_SECTION_ASM_OP	"\t.section \".rodata\""
 
 
 #define SDATA_SECTION_ASM_OP "\t.section \".sdata\",\"aw\""
@@ -435,10 +434,12 @@ do {									\
 #define SBSS_SECTION_ASM_OP \
   ((DEFAULT_ABI == ABI_SOLARIS) ? "\t.section \".sbss\",\"aw\"" : "\t.section \".sbss\",\"aw\",@nobits")
 
+#define RELOC_SECTION_ASM_OP "\t.section \".reloc\",\"aw\""
+
 
 /* Besides the usual ELF sections, we need a toc section.  */
 #undef EXTRA_SECTIONS
-#define EXTRA_SECTIONS in_const, in_ctors, in_dtors, in_toc, in_sdata, in_sdata2, in_sbss, in_init, in_fini
+#define EXTRA_SECTIONS in_const, in_ctors, in_dtors, in_toc, in_sdata, in_sdata2, in_sbss, in_init, in_fini, in_reloc
 
 #undef EXTRA_SECTION_FUNCTIONS
 #define EXTRA_SECTION_FUNCTIONS						\
@@ -450,7 +451,8 @@ do {									\
   SDATA2_SECTION_FUNCTION						\
   SBSS_SECTION_FUNCTION							\
   INIT_SECTION_FUNCTION							\
-  FINI_SECTION_FUNCTION
+  FINI_SECTION_FUNCTION							\
+  RELOC_SECTION_FUNCTION
 
 extern void toc_section (), sdata_section (), sdata2_section ();
 extern void sbss_section ();
@@ -551,6 +553,17 @@ fini_section ()								\
     {									\
       in_section = in_fini;						\
       fprintf (asm_out_file, "%s\n", FINI_SECTION_ASM_OP);		\
+    }									\
+}
+
+#define RELOC_SECTION_FUNCTION						\
+void									\
+reloc_section ()							\
+{									\
+  if (in_section != in_reloc)						\
+    {									\
+      in_section = in_reloc;						\
+      fprintf (asm_out_file, "%s\n", RELOC_SECTION_ASM_OP);		\
     }									\
 }
 

@@ -1,0 +1,650 @@
+; $Id: std.mac,v 1.1 2002/09/09 17:38:49 querbach Exp $
+
+; std.mac		      Copyright (C) 1990-1996, Real-Time Systems Inc.
+;------------------------------------------- All Rights Reserved ------------
+;
+;	Standard Macro Package
+;
+;	- configuration switches
+;	- automatic external declarations
+;	- instruction set enhancements
+;
+;----------------------------------------------------------------------------
+
+;----------------------------------------------------------------------------
+;
+;	section definitions
+;
+
+code	macro			; normal program code
+	section	.const
+	endm
+
+idata	macro
+	section	.data		; switch to initialized data section
+	endm
+
+udata	macro
+	section	.bss		; switch to uninitialized data section
+	endm
+
+nonvol	macro	name
+	section	.@name		; switch to named eeprom section
+	endm
+
+
+	code			; set default section
+
+
+;----------------------------------------------------------------------------
+;
+;	macro language expansion
+;
+;
+
+ifsame	macro	s1,s2		; are strings equal?
+	ifeqs	s1,s2
+	endm
+
+
+;----------------------------------------------------------------------------
+;
+;	public/external definition control
+;
+;
+
+import	macro	filename	; use mac file for external references
+
+publish	set	0		; reference access points in file
+	include	filename	; include file here
+
+	endm
+
+
+export	macro	filename	; use mac file for public symbols
+
+publish	set	1		; publish access points in file
+	include	filename	; include file here
+
+	endm
+
+
+declare	macro	name		; declare name as public or extern in mac file
+
+	if	publish		; publishing names?
+	 public	 name		;  declare to rest of system 
+	else			; using names:
+	 extern	 name		;  demand from rest of system
+	endif
+
+	endm
+
+
+;----------------------------------------------------------------------------
+;
+;	assumption checking
+;
+;
+
+assume	macro	name,value		; check symbol assumption
+	ifne	name-value
+ 	print	"ERROR:  Design of this module assumes &&name = &&value."
+	fail	1
+	endif
+	endm
+
+
+;----------------------------------------------------------------------------
+;
+;	data structure definition control
+;
+;
+
+struc		macro	name		; declare a data structure
+		offset	0		;  make an absolute section
+		endm
+
+
+endst		macro	name		; end a structure declaration
+name@_siz	equ	$		;  note size of structure
+		code			;  return to code section
+		endm
+
+
+;----------------------------------------------------------------------------
+;
+;	 character constants
+;
+;
+
+nul	equ	00h		; null character
+soh	equ	01h		; start of header
+stx	equ	02h		; start of text
+etx	equ	03h		; end of text
+eot	equ	04h		; end of transmission
+enq	equ	05h		; enquiry
+ack	equ	06h		; acknowledge
+bel	equ	07h		; bell
+bs	equ	08h		; backspace
+ht	equ	09h		; horizontal tab
+lf	equ	0Ah		; line feed
+vt	equ	0Bh		; vertical tab
+ff	equ	0Ch		; form feed
+cr	equ	0Dh		; carriage return
+so	equ	0Eh		; shift out
+si	equ	0Fh		; shift in
+dle	equ	10h		; data link escape
+dc1	equ	11h		; device control 1 (XON)
+dc2	equ	12h		; device control 2
+dc3	equ	13h		; device control 3 (XOFF)
+dc4	equ	14h		; device control 4
+nak	equ	15h		; not acknowledge
+syn	equ	16h		; synchronize
+etb	equ	17h		; end of transmission block
+can	equ	18h		; cancel
+em	equ	19h		; end of medium
+sub	equ	1Ah		; substitute
+esc	equ	1Bh		; escape
+fs	equ	1Ch		; file separator
+gs	equ	1Dh		; group separator
+rs	equ	1Eh		; record separator
+us	equ	1Fh		; unit separator
+
+
+;----------------------------------------------------------------------------
+;
+;	stack space allocation
+;
+;	The following two routines provide transparent allocation of
+;	stack space within a routine.  In between calls to alloca and
+;	freea, the symbol aa_siz holds the size of the allocation.
+;	Calls to alloca and freea must be paired, and nested calls are
+;	not supported.  Note that both routines preserve all registers,
+;	but destroy the cpu flags.
+;
+
+; allocate stack space for routine
+alloca	macro	size
+aa_siz	set	size		; remember allocation size
+	pshx			; protect register
+
+	tsx			; point to stack
+	subx	#aa_siz-2	; allocate space
+	txs
+
+	ldx	aa_siz-2,x	; recover register
+	endm
+
+
+; free stack space allocated by alloca
+freea	macro			; deallocate stack space
+	pshx			; protect register
+	tsx			; point to stack
+	std	aa_siz-2,x	; save d for exit
+	ldd	0,x		; save x for exit
+	std	aa_siz,x
+
+	tpa			; protect carry bit
+	addx	#aa_siz-2	; deallocate space
+	txs
+	tap
+
+	puld			; recover register
+	pulx
+	endm
+
+
+;----------------------------------------------------------------------------
+;
+;	double accumulator instruction set enhancements
+;
+;
+
+absd	macro			; take absolute value of d
+	tsta			; positive?
+	bpl	absd\@		; yes, exit
+
+	negd			; no, make positive
+	bpl	absd\@		; positive now?  exit
+
+	ldd	#7FFFh		; no, force to maximum positive number
+absd\@
+	endm
+
+
+fixd	macro			; clamp any overflow from preceding operation
+	bvc	fixd2\@		; no overflow?  exit
+	bpl	fixd1\@		; result should be negative?  go on
+
+	ldd	#7FFFh		; clamp to positive maximum
+	bra	fixd2\@		; exit
+
+fixd1\@	ldd	#-7FFFh		; clamp to negative maximum
+fixd2\@
+	endm
+	
+
+maxd	macro	arg,indx	; return maximum of d and argument, signed
+
+	ifnes	"&&indx",""	;  indexed addressing?
+	 cpd	arg,indx	;   d higher?
+	 bge	maxd\@		;   yes, go on
+	 ldd	arg,indx	;   argument higher, get it
+	
+	else			;  extended addressing:
+	 cpd	arg		;   d higher?
+	 bge	maxd\@		;   yes, go on
+	 ldd	arg		;   argument higher, get it
+
+	endif
+maxd\@
+	endm
+
+
+mind	macro	arg,indx	; return minimum of d and argument, signed
+
+	ifnes	"&&indx",""	;  indexed addressing?
+	cpd	arg,indx	;   d lower?
+	ble	mind\@		;   yes, go on
+	ldd	arg,indx	;   argument lower, get it
+
+	else			;  extended addressing:
+	cpd	arg		;   d lower?
+	ble	mind\@		;   yes, go on
+	ldd	arg		;   argument lower, get it
+
+	endif
+mind\@
+	endm
+
+
+
+umaxd	macro	arg,indx	; return maximum of d and argument, unsigned
+
+	ifnes	"&&indx",""	;  indexed addressing?
+	cpd	arg,indx	;   d higher?
+	bhs	umaxd\@		;   yes, go on
+	ldd	arg,indx	;   argument higher, get it
+
+	else			;  extended addressing:
+	cpd	arg		;   d higher?
+	bhs	umaxd\@		;   yes, go on
+	ldd	arg		;   argument higher, get it
+
+	endif
+umaxd\@
+	endm
+
+
+umind	macro	arg,indx	; return minimum of d and argument, unsigned
+
+	ifnes	"&&indx",""	;  indexed addressing?
+	cpd	arg,indx	;   d lower?
+	bls	umind\@		;   yes, go on
+	ldd	arg,indx	;   argument lower, get it
+
+	else			;  extended addressing:
+	cpd	arg		;   d lower?
+	bls	umind\@		;   yes, go on
+	ldd	arg		;   argument lower, get it
+
+	endif
+umind\@
+	endm
+
+
+;----------------------------------------------------------------------------
+;
+;	index register instruction set enhancements
+;
+;
+
+xgxy	macro			; swap x and y
+	exg	x,y
+	endm
+
+
+adx	macro			; add d to x
+	pshd			;  save operand
+
+	xgdx			;  move x to d
+	tsx			;  point to operand
+	addd	0,x		;  add in operand
+	xgdx			;  result to x
+
+	puld			;  recover operand
+	endm
+
+
+addx	macro	arg,indx	; add word to x
+	xgdx			;  accumulate in d
+
+	ifnes	"&&indx",""	; indexed addressing?  (must use y)
+	 addd	arg,indx	;
+	else			; immediate or extended addressing:
+	 addd	arg		;  add it
+	endif
+
+	xgdx			;  put it back
+	endm
+
+
+subx	macro	arg,indx	; subtract word from x
+	xgdx			;  accumulate in d
+
+	ifnes	"&&indx",""	; indexed addressing?  (must use y)
+	 subd	arg,indx	;
+	else			; immediate or extended addressing:
+	 subd	arg		;  add it
+	endif
+
+	xgdx			;  put it back
+	endm
+
+
+asrx	macro			; shift right x, arithmetic
+	xgdx
+	asrd			; shift right
+	xgdx
+	endm
+
+
+aslx	macro			; rotate left x, arithmetic
+	xgdx
+	asld			; shift left
+	xgdx
+	endm
+
+
+lsrx	macro			; shift right x, logical
+	xgdx
+	lsrd			; shift right
+	xgdx
+	endm
+
+
+lslx	macro			; rotate left x, logical
+	xgdx
+	lsld			; shift left
+	xgdx
+	endm
+
+
+rorx	macro			; rotate right x
+	xgdx
+	rord			; rotate right
+	xgdx
+	endm
+
+
+rolx	macro			; rotate left x
+	xgdx
+	rold			; rotate right
+	xgdx
+	endm
+
+
+ady	macro			; add d to y
+	pshd			;  save operand
+
+	xgdy			;  move y to d
+	tsy			;  point to operand
+	addd	0,y		;  add in operand
+	xgdy			;  result to y
+
+	puld			;  recover operand
+	endm
+
+
+addy	macro	arg,indx	; add word to y
+	xgdy			;  accumulate in d
+
+	ifnes	"&&indx",""	; indexed addressing?  (must use x)
+	 addd	arg,indx	;
+	else			; immediate or extended addressing:
+	 addd	arg		;  add it
+	endif
+
+	xgdy			;  put it back
+	endm
+
+
+suby	macro	arg,indx	; subtract word from y
+	xgdy			;  accumulate in d
+
+	ifnes	"&&indx",""	; indexed addressing?  (must use x)
+	 subd	arg,indx	;
+	else			; immediate or extended addressing:
+	 subd	arg		;  add it
+	endif
+
+	xgdy			;  put it back
+	endm
+
+
+tsty	macro	arg
+	cpy	#0		; test for zero or minus
+	endm
+
+
+asry	macro			; shift right y, arithmetic
+	xgdy
+	asrd			; shift right
+	xgdy
+	endm
+
+
+asly	macro			; rotate left y, arithmetic
+	xgdy
+	asld			; shift left
+	xgdy
+	endm
+
+
+lsry	macro			; shift right y, logical
+	xgdy
+	lsrd			; shift right
+	xgdy
+	endm
+
+
+lsly	macro			; rotate left y, logical
+	xgdy
+	lsld			; shift left
+	xgdy
+	endm
+
+
+rory	macro			; rotate right y
+	xgdy
+	rord			; rotate right
+	xgdy
+	endm
+
+
+roly	macro			; rotate left y
+	xgdy
+	rold			; rotate right
+	xgdy
+	endm
+
+
+;----------------------------------------------------------------------------
+;
+;	memory word instruction set enhancements
+;
+;
+
+clrw	macro	arg,indx	; clear word in memory
+
+	ifnes	"&&indx",""	;  indexed addressing?
+	clr	arg+0,indx	;   clear high byte
+	clr	arg+1,indx	;   clear low byte
+	
+	else			;  extended addressing:
+	clr	arg+0		;   clear high byte
+	clr	arg+1		;   clear low byte
+
+	endif
+	endm
+
+
+negw	macro	arg,indx	; negate word in memory
+	pshd			;  protect register
+
+	ifnes	"&&indx",""	;  indexed addressing?
+	ldd	arg,indx	;   get word
+	negd			;   negate it
+	std	arg,indx	;   store result
+	
+	else			;  extended addressing:
+	ldd	arg		;   get word
+	negd			;   negate it
+	std	arg		;   store result
+
+	endif
+	puld			;  recover register
+	endm
+
+
+incw	macro	arg,indx	; increment word in memory
+
+	ifnes	"&&indx",""	;  indexed addressing?
+	inc	arg+1,indx	;   increment low byte
+	bne	incw\@		;   no roll?  exit
+	inc	arg+0,indx	;   increment high byte
+
+	else			;  extended addressing:
+	inc	arg+1		;   increment low byte
+	bne	incw\@		;   no roll?  exit
+	inc	arg+0		;   increment high byte
+
+	endif
+incw\@
+	endm
+
+
+decw	macro	arg,indx	; decrement word in memory
+	pshd			;  protect accumulator
+
+	ifnes	"&&indx",""	;  indexed addressing?
+	ldd	arg,indx	;   get word
+	subd	#1		;   decrement it
+	std	arg,indx	;   store new value
+
+	else			;  extended addressing:
+	ldd	arg		;   get word
+	subd	#1		;   decrement it
+	std	arg		;   store new value
+
+	endif
+	puld			;  recover accumulator
+	endm
+
+
+tstw	macro	arg,indx	; test word in memory
+	pshd			;  protect accumulator
+
+	ifnes	"&&indx",""	;  indexed addressing?
+	ldd	arg,indx	;   get word to set flags
+
+	else			;  extended addressing:
+	ldd	arg		;   get word to set flags
+
+	endif
+	puld			;  recover accumulator
+	endm
+
+
+lsrw	macro	arg,indx	; logical-shift right word in memory
+	pshd			;  protect accumulator
+
+	ifnes	"&&indx",""	;  indexed addressing?
+	ldd	arg,indx	;   get word
+	lsrd			;   shift it left
+	std	arg,indx	;   store new value
+
+	else			;  extended addressing:
+	ldd	arg		;   get word
+	lsrd			;   shift it left
+	std	arg		;   store new value
+
+	endif
+	puld			;  recover accumulator
+	endm
+
+
+lslw	macro	arg,indx	; logical-shift left word in memory
+	pshd			;  protect accumulator
+
+	ifnes	"&&indx",""	;  indexed addressing?
+	ldd	arg,indx	;   get word
+	lsld			;   shift it left
+	std	arg,indx	;   store new value
+
+	else			;  extended addressing:
+	ldd	arg		;   get word
+	lsld			;   shift it left
+	std	arg		;   store new value
+
+	endif
+	puld			;  recover accumulator
+	endm
+
+
+rolw	macro	arg,indx	; rotate left word in memory
+	pshd			;  protect accumulator
+
+	ifnes	"&&indx",""	;  indexed addressing?
+	ldd	arg,indx	;   get word
+	rold			;   rotate it left
+	std	arg,indx	;   store new value
+
+	else			;  extended addressing:
+	ldd	arg		;   get word
+	rold			;   rotate it left
+	std	arg		;   store new value
+
+	endif
+	puld			;  recover accumulator
+	endm
+
+
+rorw	macro	arg,indx	; rotate right word in memory
+	pshd			;  protect accumulator
+
+	ifnes	"&&indx",""	;  indexed addressing?
+	ldd	arg,indx	;   get word
+	rord			;   rotate it right
+	std	arg,indx	;   store new value
+
+	else			;  extended addressing:
+	ldd	arg		;   get word
+	rord			;   rotate it right
+	std	arg		;   store new value
+
+	endif
+	puld			;  recover accumulator
+	endm
+
+
+fixw	macro	arg,indx	; clamp any overflow from preceding operation
+	pshd
+
+	bvc	fixw3\@		; no overflow?  exit
+	bpl	fixw1\@		; result should be negative?  go on
+
+	ldd	#7FFFh		; clamp to positive maximum
+	bra	fixw2\@		; exit
+
+fixw1\@	ldd	#-7FFFh		; clamp to negative maximum
+fixw2\@	ifnes	"&&indx",""	; indexed addressing?
+	 std	arg,indx
+	else			; extended addressing:
+	 std	arg
+	endif
+
+fixw3\@	puld
+	endm
+
+

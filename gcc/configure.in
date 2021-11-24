@@ -860,6 +860,7 @@ for machine in $build $host $target; do
 		xm_file=i386/xm-go32.h
 		tm_file=i386/go32.h
 		tmake_file=i386/t-go32
+		xmake_file=i386/x-go32
 		;;
 	i[[34567]]86-pc-msdosdjgpp*)
 		xm_file=i386/xm-go32.h
@@ -3017,15 +3018,15 @@ fi
 
 # If we have gas in the build tree, make a link to it.
 if [[ -f ../gas/Makefile ]]; then
-	rm -f as; $symbolic_link ../gas/as.new as 2>/dev/null
+	rm -f as; $symbolic_link ../gas/as-new as 2>/dev/null
 fi
 
 # If we have ld in the build tree, make a link to it.
 if [[ -f ../ld/Makefile ]]; then
 	if [[ x$use_collect2 = x ]]; then
-		rm -f ld; $symbolic_link ../ld/ld.new ld 2>/dev/null
+		rm -f ld; $symbolic_link ../ld/ld-new ld 2>/dev/null
 	else
-		rm -f collect-ld; $symbolic_link ../ld/ld.new collect-ld 2>/dev/null
+		rm -f collect-ld; $symbolic_link ../ld/ld-new collect-ld 2>/dev/null
 	fi
 fi
 
@@ -3038,6 +3039,13 @@ do
 	# The odd quoting in the next line works around
 	# an apparent bug in bash 1.12 on linux.
 	${srcdir}/[[*]]/config-lang.in) ;;
+	# Don't build objc unless explicitly enabled since it doesn't
+	# "just work" in cross compilers (stdio.h,ctype.h "missing").
+	${srcdir}/objc/config-lang.in)
+	  if [[ x$enable_objc = xyes ]]; then
+		subdirs="$subdirs `echo $lang | sed -e 's,^.*/\([[^/]]*\)/config-lang.in$,\1,'`"
+	  fi
+	  ;;
 	*) subdirs="$subdirs `echo $lang | sed -e 's,^.*/\([[^/]]*\)/config-lang.in$,\1,'`" ;;
 	esac
 done
@@ -3162,6 +3170,16 @@ if [[ ! -f Makefile.in ]]; then
 	fi
 	echo "source ${srcdir}/.gdbinit" >> .gdbinit
 fi
+
+# If this is using newlib, then define inhibit_libc in
+# LIBGCC2_CFLAGS.  This will cause __eprintf to be left out of
+# libgcc.a, but that's OK because newib should have its own version of
+# assert.h.
+inhibit_libc=
+if [[ x$with_newlib = xyes ]]; then
+	inhibit_libc=-Dinhibit_libc
+fi
+AC_SUBST(inhibit_libc)
 
 # Process the language and host/target makefile fragments.
 ${CONFIG_SHELL-/bin/sh} $srcdir/configure.frag $srcdir "$subdirs" "$dep_host_xmake_file" "$dep_tmake_file"

@@ -1,0 +1,181 @@
+
+
+			XGCC for 68HC11
+			---------------
+
+HC11.0 -- 1996 March 15
+-----------------------
+
+	Copied contents of config\msdos to config\hc11.
+	Edited configur.bat and top.sed to use files config\hc11\hc11*.
+	Copied config\we32k* to config\hc11 and renamed.
+	Built compiler -- compiles simple hello world, seems ok.
+
+
+HC11.3 -- 1996 March 25
+-----------------------
+
+	Modified a few instruction in the md file. The int works.
+	Modified hc11.h
+
+
+HC11.4 -- 1996 Mar 28
+---------------------
+
+	Good version of add, and, or, eor, shift.
+
+      --  1996 Mar 31
+	Add umulhiqi3
+      --  1996 Apr 1
+	Add iny, dey, incb, decb, udivhi3,
+      -- 1996 Apr 2
+	udivqi3,umodqi3,umodhi3
+
+
+HC11.5 -- 1996 Apr 5
+--------------------
+
+	Debuged md file and h file. Success compiled a single C file, generated
+	assembler code.
+
+
+HC11.7 -- 1996 Apr 11
+---------------------
+
+	Tested LOPTV files.
+
+
+HC11.8 -- 1996 Apr 12
+---------------------
+
+	Add long mul, div, mod, umul, udiv, umod, ashlsi, ashrsi,lshrsi.
+	1996 Apr 16
+	Tested all of the 'long' files.
+
+
+HC11.9 -- 1996 April 26
+-----------------------
+
+	Tested against lbgplus.271\libio and libc\ansi\stdlib.  Some
+	problems remain in header and machine definition:
+
+	- mulsi?
+	- ashrhi3 generates tst y and dec y
+	- addsi needs to clobber d and handle immedate operand properly
+	- umodsi?
+	- shift si counts should be qi
+	- add d y generated under some conditions
+	- iorhi should use "d" constraint in operand 2
+	- divhi, modhi need constraints like mulsi, but watch for ldx y
+
+	- static constructors and destructors not supported properly
+	- set .,.+n used to reserve space in data section -- convert to
+	  ds or org
+	- need tablejump instruction
+	- need idata and udata sections
+	- should short be 16 bits?
+
+
+HC11.13 -- 1996 May 1
+---------------------
+
+	- Added EXTRA_SECTIONS, constructors, and destructors.
+	- Added tablejump instruction.
+	- Proper variable section definitions added.
+	- Tested extensively on libraries and RTS code.
+
+
+HC11.14 -- 1996 May 8
+---------------------
+
+	- Changed short size to 16 bits to clean up virtual function 
+	  invocation code.
+
+
+HC11.15 -- 1996 May 9
+---------------------
+
+	- Scratch version.
+
+
+HC11.16 -- 1996 May 10
+----------------------
+
+	- Scratch version
+
+
+HC11.17 -- 1996 May 11
+----------------------
+
+	- Derived from HC11.14
+	- Cleaned up jump and jump_indirect.  Still can't compile thunks,
+	  however.
+
+
+HC11.18 -- 1996 May 12
+----------------------
+
+	- Define macros in hc11.h to avoid use of $ or . in assembler
+	  symbol names.
+	- Modify subhi instruction pattern to provide register-register
+	  subtracts.
+
+
+HC11.19 -- 1996 June 13
+-----------------------
+
+	- Fixed bug in shift loops -- wasn't looping at all for some
+	  shift instructions.
+
+HC11.34 -- 1996 July 11
+-----------------------
+
+	Complete optimization and tuning of compiler:
+
+	- Converted from register numbers to names
+	- Make long returns explicit and correct
+	- Pass parameters in registers:
+	    HI:  D then Y
+	    SI:  D:Y
+	- Return function values in D or D:Y
+	- Turn off FUNCTION_CSE and RECURSIVE_FUNCTION_CSE
+	- Set MAX_FIXED_MODE_SIZE to 32 to allow register return of
+	  small structures
+	- Eliminate frame pointer if no locals or arguments
+	- Optimize constant shifts; call subroutine otherwise
+	- Minimize code size in frame creation using pshx/des, pulx/ins
+	- Adjust constant costs
+	- Set memory move cost to 2, register move cost to 4 to discourage
+	  register-register transfers
+	- Clean up cmphi pattern
+	- Eliminate unnecessary tsthi expansions using NOTICE_UPDATE_CC
+	- Add post-increment and post-decrement
+	- Add incw pattern
+	- Use peephole to eliminate redundant loads and stores
+	- Use peephole to convert ldd #0 to clrd
+	- Optimize branchs to use short branches where possible
+	- Put patterns in order QI, HI, SI
+	- Tune movhi pattern to encourage use of D register
+	- Set DONT_REDUCE_ADDR true.   	    
+
+HC11.35 -- 1996 July 15
+
+	Add support for 2500AD packed object files.  The -mpak switch
+	makes each public variable and function a separate module, with
+	inclusion of std.mac, and dumping of externals.  This allows use
+	archiving with the 2500AD library manager.  The resulting .lib
+	files can be searched by the 2500AD linker.
+
+HC11.36 -- 1996 August 16
+
+	Updated support for 2500AD packed object files.  There is now
+	a -mobj switch which gives normal object files (added for
+	symmetry).  The handling of constructors with .pak files was
+	also upgraded.
+
+
+HC11.37 -- 1997 April 21
+
+	Removed my_friendly_abort() from hc11.h since it conflicted
+	with the definition in cp\typeck2.c.
+

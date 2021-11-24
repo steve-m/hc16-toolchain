@@ -4521,9 +4521,12 @@ get_filename:
 	  }
 	else
 	  {
-	    /* Otherwise, omit the directory, as if the file existed
-	       in the directory with the source.  */
-	    deps_output (fbeg, ' ');
+	    /* Otherwise, prepend the source file's directory, as if the 
+	       file existed in the directory with the source.  */
+	    char* p = (char *) alloca (strlen(dsp->fname) + strlen (fbeg) + 1);
+	    strcpy (p, dsp->fname);
+	    strcat (p, fbeg);
+	    deps_output (p, ' ');
 	  }
       }
     /* If -M was specified, and this header file won't be added to the

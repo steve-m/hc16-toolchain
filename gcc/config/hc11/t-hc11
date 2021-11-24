@@ -1,0 +1,12 @@
+
+# libgcc.a is not yet integrated with usual configure/build system:
+
+LIBGCC=
+INSTALL_LIBGCC=
+
+LIBGCC1=
+CROSS_LIBGCC1=
+LIBGCC1_TEST=
+
+LIBGCC2=
+

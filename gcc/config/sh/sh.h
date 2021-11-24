@@ -158,7 +158,7 @@ extern int target_flags;
 
 #define TARGET_DEFAULT  (0)
 
-#define PRESERVE_DEATH_INFO_REGNO_P(regno) (TARGET_RELAX || optimize)
+#define PRESERVE_DEATH_INFO_REGNO_P(regno) (TARGET_RELAX)
 
 #define ASSEMBLER_DIALECT 0 /* will allow to distinguish b[tf].s and b[tf]/s .  */
 #define OVERRIDE_OPTIONS 					\

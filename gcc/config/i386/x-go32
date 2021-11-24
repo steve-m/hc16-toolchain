@@ -1,0 +1,2 @@
+# FIXME: Protoize doesn't build on go32, so disable it.
+LANGUAGES = c c++ objective-c

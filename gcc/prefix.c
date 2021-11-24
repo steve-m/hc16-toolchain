@@ -183,6 +183,8 @@ static char *
 lookup_key (key)
      char *key;
 {
+#if 0 	/* FIXME fails with undefined RegOpenKeyExa, RegOpenKeyExa, 
+	   and RegOpenQueryValueExa under cygwin-b19.1 */
   char *dst;
   DWORD size;
   DWORD type;
@@ -221,6 +223,9 @@ lookup_key (key)
     }
 
   return dst;
+#else
+  return 0;
+#endif
 }
 #endif
 
