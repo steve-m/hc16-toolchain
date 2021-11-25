@@ -7,6 +7,7 @@
 
 # Configure the following to suit your circumstances
 
+host=i686-pc-linux-gnu		# As we are running in a container, we have to hard-code the host arch
 target=hc16-coff		# machine to target
 prefix=$PWD/inst		# where to install the cross-compiler
 
@@ -24,7 +25,7 @@ prefix=$PWD/inst		# where to install the cross-compiler
 
 	mkdir build
 	cd build
-	  ../src/configure -v --target=$target --prefix=$prefix \
+	  ../src/configure -v --target=$target --host=$host --prefix=$prefix \
 	      2>&1 | tee ../config.log
 	  make -w 2>&1 | tee ../build.log
 	  make -w install 2>&1 | tee ../inst.log
